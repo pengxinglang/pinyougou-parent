@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+    <http pattern="/*.html" security="none"></http>
+    <http pattern="/css/**" security="none"></http>
+    <http pattern="/img/**" security="none"></http>
+    <http pattern="/js/**" security="none"></http>
+    <http pattern="/plugins/**" security="none"></http>
+
+    <!-- 配置拦截规则-->
+
+    <http use-expressions="false">  <!--关闭SPEL表达式-->
+        <intercept-url pattern="/**" access="ROLE_ADMIN"/>  <!--配置角色，以及访问权限-->
+        <!--配置 登录界面，认证成功返回界面，认证失败返回界面 , 首次登录都默认跳转到首页-->
+        <form-login login-page="/login.html" default-target-url="/admin/index.html" authentication-failure-url="/login.html" always-use-default-target="true"/>
+        <!--取消csrf防御，由于html提交时无法认证-->
+        <csrf disabled="true"/>
+
+        <!--如果你在系统中使用了框架页，需要设置框架页的策略为SAMEORIGIN-->
+        <headers>
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
+
+        <!--设置退出登录-->
+        <logout/>
+    </http>
+
+
+
+    <!--认证管理-->
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="admin" password="123456" authorities="ROLE_ADMIN"/>
+                <user name="sunwukong" password="dasheng" authorities="ROLE_ADMIN"/>
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+</beans:beans>
